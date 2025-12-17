@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://trainingcompany.com/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://trainingcompany.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://trainingcompany.com/">
+      <s:element name="ProcessMessage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userMessage" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="userId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sessionId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProcessMessageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProcessMessageResult" type="tns:ChatResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ChatResponse">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Success" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Response" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Intent" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Confidence" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="ActionType" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetQuickReplies">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetQuickRepliesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetQuickRepliesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetCourseRecommendations">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="userId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCourseRecommendationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCourseRecommendationsResult" type="tns:ArrayOfCourseRecommendation" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfCourseRecommendation">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="CourseRecommendation" nillable="true" type="tns:CourseRecommendation" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CourseRecommendation">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="CourseID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Price" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ProcessMessageSoapIn">
+    <wsdl:part name="parameters" element="tns:ProcessMessage" />
+  </wsdl:message>
+  <wsdl:message name="ProcessMessageSoapOut">
+    <wsdl:part name="parameters" element="tns:ProcessMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetQuickRepliesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetQuickReplies" />
+  </wsdl:message>
+  <wsdl:message name="GetQuickRepliesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetQuickRepliesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCourseRecommendationsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCourseRecommendations" />
+  </wsdl:message>
+  <wsdl:message name="GetCourseRecommendationsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCourseRecommendationsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ChatbotServiceSoap">
+    <wsdl:operation name="ProcessMessage">
+      <wsdl:input message="tns:ProcessMessageSoapIn" />
+      <wsdl:output message="tns:ProcessMessageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetQuickReplies">
+      <wsdl:input message="tns:GetQuickRepliesSoapIn" />
+      <wsdl:output message="tns:GetQuickRepliesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCourseRecommendations">
+      <wsdl:input message="tns:GetCourseRecommendationsSoapIn" />
+      <wsdl:output message="tns:GetCourseRecommendationsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ChatbotServiceSoap" type="tns:ChatbotServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ProcessMessage">
+      <soap:operation soapAction="http://trainingcompany.com/ProcessMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetQuickReplies">
+      <soap:operation soapAction="http://trainingcompany.com/GetQuickReplies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCourseRecommendations">
+      <soap:operation soapAction="http://trainingcompany.com/GetCourseRecommendations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ChatbotServiceSoap12" type="tns:ChatbotServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ProcessMessage">
+      <soap12:operation soapAction="http://trainingcompany.com/ProcessMessage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetQuickReplies">
+      <soap12:operation soapAction="http://trainingcompany.com/GetQuickReplies" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCourseRecommendations">
+      <soap12:operation soapAction="http://trainingcompany.com/GetCourseRecommendations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ChatbotService">
+    <wsdl:port name="ChatbotServiceSoap" binding="tns:ChatbotServiceSoap">
+      <soap:address location="https://localhost:44307/ChatbotService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ChatbotServiceSoap12" binding="tns:ChatbotServiceSoap12">
+      <soap12:address location="https://localhost:44307/ChatbotService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

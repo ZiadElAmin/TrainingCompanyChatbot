@@ -24,29 +24,29 @@ namespace TrainingCompany.Services
                 if (string.IsNullOrWhiteSpace(userMessage))
                     return new ChatResponse { Success = false, Response = "Please enter a message." };
 
-                // Normalize message
+                // 1. Normalize message for easier matching
                 string normalizedMessage = userMessage.ToLower().Trim();
 
-                // Try to match with FAQs
+                // 2. Pass 1: Try to match with the FAQ database entries
                 ChatResponse response = MatchFAQ(normalizedMessage);
 
-                // If no FAQ match, try intent detection
+                // 3. Pass 2: If no FAQ match, try rule-based intent detection
                 if (response == null)
                     response = DetectIntent(normalizedMessage);
 
-                // Default response if nothing matched
+                // 4. Default response (Fallback Mechanism)
                 if (response == null)
                 {
                     response = new ChatResponse
                     {
                         Success = true,
-                        Response = "I'm not sure I understand. Could you rephrase that? You can ask me about courses, enrollment, pricing, schedules, or anything else!",
+                        Response = "I'm not sure I understand. Could you rephrase that? You can ask me about courses, enrollment, pricing, or schedules!",
                         Intent = "unknown",
                         Confidence = 0
                     };
                 }
 
-                // Log chat history
+                // 5. Log history to your SQL table
                 LogChatHistory(userId, sessionId, userMessage, response.Response, response.Intent, response.Confidence);
 
                 return response;

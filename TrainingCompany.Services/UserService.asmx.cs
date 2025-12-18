@@ -84,8 +84,8 @@ namespace TrainingCompany.Services
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"SELECT UserID, Name, Email, Phone, IsAdmin 
-                                   FROM Users 
-                                   WHERE Email = @Email AND Password = @Password AND IsActive = 1";
+                           FROM Users 
+                           WHERE Email = @Email AND Password = @Password AND IsActive = 1";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@Email", email);
@@ -96,15 +96,23 @@ namespace TrainingCompany.Services
 
                     if (reader.Read())
                     {
+                        // 1. EXTRACT ALL DATA FIRST while the reader is open
                         int userId = (int)reader["UserID"];
+                        string name = reader["Name"].ToString();
+                        string userEmail = reader["Email"].ToString();
+                        string phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "";
+                        bool isAdmin = (bool)reader["IsAdmin"];
 
-                        // Update last login
+                        // 2. NOW close the reader safely
                         reader.Close();
+
+                        // 3. Update last login
                         string updateQuery = "UPDATE Users SET LastLoginDate = GETDATE() WHERE UserID = @UserID";
                         SqlCommand updateCmd = new SqlCommand(updateQuery, conn);
                         updateCmd.Parameters.AddWithValue("@UserID", userId);
                         updateCmd.ExecuteNonQuery();
 
+                        // 4. Return the data using the variables we saved, NOT the closed reader
                         return new UserResponse
                         {
                             Success = true,
@@ -112,10 +120,10 @@ namespace TrainingCompany.Services
                             User = new User
                             {
                                 UserID = userId,
-                                Name = reader["Name"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "",
-                                IsAdmin = (bool)reader["IsAdmin"]
+                                Name = name,
+                                Email = userEmail,
+                                Phone = phone,
+                                IsAdmin = isAdmin
                             }
                         };
                     }
